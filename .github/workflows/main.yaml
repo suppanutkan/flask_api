@@ -10,10 +10,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-lastest
+    permissions:
+     actions: read
+     contents: read
+     security-events: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Analyze with CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+         category: "/language:${{matrix.language}}"
 
       - name: Set up Python version
         uses: actions/setup-python@v4
@@ -36,7 +49,7 @@ jobs:
             .
             !venv/
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-lastest
     needs: build
     environment:
       name: 'production'
